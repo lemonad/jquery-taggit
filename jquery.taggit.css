@@ -1,0 +1,18 @@
+/* Example css */
+span.taggit-tag {
+    display: inline-block;
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-left: 1px;
+    margin-right: 1px;
+    cursor: pointer;
+    color: #007fce;
+}
+span.taggit-tag:hover {
+  color: #fff;
+  background-color: #009dff;
+}
+span.taggit-tag-used {
+    background-color: #007fce;
+    color: #fff;
+}

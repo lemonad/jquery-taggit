@@ -1,0 +1,8 @@
+JQuery companion for django-taggit (https://github.com/alex/django-taggit),
+matching its method of parsing:
+
+  "If any tag name which isn't being quoted contains whitespace, the
+   resulting string of tag names will be comma-delimited, otherwise
+   it will be space-delimited."
+
+TODO: Show tag suggestions while typing.

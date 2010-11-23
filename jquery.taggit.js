@@ -321,7 +321,7 @@ $.fn.taggit = function( settings ) {
             }
 
             // bind click on suggestion tags
-            suggested_tags_div.find( ".tag" ).click(function() {
+            suggested_tags_div.find( ".taggit-tag" ).click(function() {
                 var tag = $( this );
                 var tag_text = tag.text();
                 var tags_text = input_field.val();

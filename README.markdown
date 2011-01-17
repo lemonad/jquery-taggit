@@ -12,7 +12,7 @@ covers the basic principle:
 
 Example
 -------
-![Example](https://github.com/downloads/lemonad/jquery-taggit/example/example.png)
+![Example](https://github.com/lemonad/jquery-taggit/raw/master/example/example.png)
 
 
 How to use

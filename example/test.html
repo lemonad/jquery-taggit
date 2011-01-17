@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>JQuery-Taggit Example</title>
+    <link rel="stylesheet" href="example.css">
+    <link rel="stylesheet" href="../third_party/qunit.css">
+    <script src="../third_party/jquery-1.4.4.min.js"></script>
+    <script src="../third_party/qunit.js"></script>
+    <script src="../third_party/jquery.timers-1.2.js"></script>
+    <script src="../jquery.taggit.js"></script>
+    <script>
+      $(document).ready(function() {
+        taggit = $( "#tags" ).taggit( { tag_selector:
+                                        "#suggested-tags .taggit-tag" } );
+
+        test( "django-taggit compatibility: apple, balls, cats and dogs",
+              function() {
+          // [0] tag input string
+          // [1] resulting tags
+          // [2] resulting tag edit string
+          var tests = [// No commas, so space delimited
+                       ["apple ball cat",
+                        ["apple", "ball", "cat"],
+                        "apple, ball, cat"],
+                       // Comma present, so comma delimited
+                       ["apple, ball cat",
+                        ["apple", "ball cat"],
+                        "\"ball cat\", apple"],
+                       // All commas are quoted, so space delimited
+                       ["\"apple, ball\" cat dog",
+                        ["apple, ball", "cat", "dog"],
+                        "\"apple, ball\", cat, dog"],
+                       // Contains an unquoted comma, so comma delimited
+                       ["\"apple, ball\", cat dog",
+                        ["apple, ball", "cat dog"],
+                        "\"apple, ball\", \"cat dog\""],
+                       // No commas, so space delimited
+                       ["apple \"ball cat\" dog",
+                        ["apple", "ball cat", "dog"],
+                        "\"ball cat\", apple, dog"],
+                       // Unclosed double quote is ignored
+                       ["\"apple\" \"ball dog",
+                        ["apple", "ball", "dog"],
+                        "apple, ball, dog"]
+                      ];
+
+          expect( tests.length * 2 );
+
+          for ( var i in tests ) {
+            var tags = $.fn.taggit.parse_tags( tests[i][0] );
+            deepEqual( tags,
+                       tests[i][1],
+                       "Testing parse_tags('" + tests[i][0] + "')." );
+
+            var edit_str = $.fn.taggit.edit_string_for_tags( tags );
+            equals( edit_str,
+                    tests[i][2],
+                    "Testing edit_string_for_tags([" + tags + "])." );
+          }
+        });
+
+        /*
+        The following tests are from Alex Gaynor's django-taggit:
+        https://github.com/alex/django-taggit/
+        which in turn was ported from Jonathan Buchanan's django-tagging:
+        http://django-tagging.googlecode.com/
+
+        */
+        test( "Django-taggit compatibility: simple space delimited tags",
+              function() {
+          expect( 4 );
+          deepEqual( $.fn.taggit.parse_tags( 'one' ),
+                     ['one'] );
+          deepEqual( $.fn.taggit.parse_tags( 'one two' ),
+                     ['one', 'two'] );
+          deepEqual( $.fn.taggit.parse_tags( 'one two three' ),
+                     ['one', 'three', 'two'] );
+          deepEqual( $.fn.taggit.parse_tags( 'one one two two' ),
+                     ['one', 'two'] );
+        });
+
+        test( "Django-taggit compatibility: comma delimited multiple words",
+              function() {
+          expect( 4 );
+          deepEqual( $.fn.taggit.parse_tags( ',one' ),
+                     ['one'] );
+          deepEqual( $.fn.taggit.parse_tags( ',one two' ),
+                     ['one two'] );
+          deepEqual( $.fn.taggit.parse_tags( ',one two three' ),
+                     ['one two three'] );
+          deepEqual( $.fn.taggit.parse_tags( 'a-one, a-two and a-three' ),
+                     ['a-one', 'a-two and a-three'] );
+        });
+
+        test( "Django-taggit compatibility: double quoted multiple words",
+              function() {
+          expect(5);
+          deepEqual( $.fn.taggit.parse_tags( '"one' ),
+                     ['one'] );
+          deepEqual( $.fn.taggit.parse_tags( '"one two' ),
+                     ['one', 'two'] );
+          deepEqual( $.fn.taggit.parse_tags( '"one two three' ),
+                     ['one', 'three', 'two'] );
+          deepEqual( $.fn.taggit.parse_tags( '"one two"' ),
+                     ['one two'] );
+          deepEqual( $.fn.taggit.parse_tags( 'a-one "a-two and a-three"' ),
+                     ['a-one', 'a-two and a-three'] );
+        });
+
+        test( "Django-taggit compatibility: no loose commas",
+              function() {
+          expect(1);
+          deepEqual( $.fn.taggit.parse_tags( 'one two "thr,ee"' ),
+                     ['one', 'thr,ee', 'two'] );
+        });
+
+        test( "Django-taggit compatibility: with loose commas",
+              function() {
+          expect(1);
+          deepEqual( $.fn.taggit.parse_tags( '"one", two three' ),
+                     ['one', 'two three'] );
+        });
+
+        test( "Django-taggit compatibility: double quotes can contain commas",
+              function() {
+          expect(2);
+
+          deepEqual( $.fn.taggit.parse_tags( 'a-one "a-two, and a-three"' ),
+                     ['a-one', 'a-two, and a-three'] );
+          deepEqual( $.fn.taggit.parse_tags( '"two", one, one, two, "one"' ),
+                     ['one', 'two'] );
+        });
+
+        test( "Django-taggit compatibility: naughty input",
+              function() {
+          expect(8);
+          // Bad users! Naughty users!
+          deepEqual( $.fn.taggit.parse_tags( null ), [] );
+          deepEqual( $.fn.taggit.parse_tags(''), [] );
+          deepEqual( $.fn.taggit.parse_tags('"'), [] );
+          deepEqual( $.fn.taggit.parse_tags('""'), [] );
+          deepEqual( $.fn.taggit.parse_tags('"""""""'), [] );
+          deepEqual( $.fn.taggit.parse_tags(',,,,,,'), [] );
+          deepEqual( $.fn.taggit.parse_tags('",",",",",",","'), [','] );
+          deepEqual( $.fn.taggit.parse_tags('a-one "a-two" and "a-three'),
+                     ['a-one', 'a-three', 'a-two', 'and'] );
+        });
+
+        test( "Django-taggit compatibility: recreation of tag list " +
+              "string representations",
+              function() {
+          expect(5);
+          deepEqual( $.fn.taggit.edit_string_for_tags(["plain"]),
+                     'plain' );
+          deepEqual( $.fn.taggit.edit_string_for_tags(["plain", "spa ces"]),
+                     '"spa ces", plain' );
+          deepEqual( $.fn.taggit.edit_string_for_tags(["plain", "spa ces", "com,ma"]),
+                     '"com,ma", "spa ces", plain' );
+          deepEqual( $.fn.taggit.edit_string_for_tags(["plain", "com,ma"]),
+                     '"com,ma", plain' );
+          deepEqual( $.fn.taggit.edit_string_for_tags(["com,ma", "spa ces"]),
+                     '"com,ma", "spa ces"' );
+        });
+
+      });
+    </script>
+  </head>
+  <body>
+    <div id="content">
+      <header>
+        <h1>JQuery-Taggit Test</h1>
+      </header>
+      <form>
+        <label for="tags">Tags:</label>
+        <input id="tags" name="tags" type="text" value="apple, dog"></input>
+        <div id="suggested-tags">
+          <div>
+            <span class="label">Span suggestions:</span>
+            <span class="taggit-tag">cat</span>
+            <span class="taggit-tag">dog</span>
+            <span class="taggit-tag">horse</span>
+            <span class="taggit-tag">parrot</span>
+          </div>
+
+          <div>
+            <span class="label">List suggestions:</span>
+            <ul>
+              <li class="taggit-tag">apple</li>
+              <li class="taggit-tag">ball</li>
+              <li class="taggit-tag">cat</li>
+              <li class="taggit-tag">dog</li>
+            </ul>
+          </div>
+
+          <div>
+            <span class="label">Paragraph suggestions:</span>
+            <p class="taggit-tag">apple</p>
+            <p class="taggit-tag">banana</p>
+            <p class="taggit-tag">lemon</p>
+            <p class="taggit-tag">pear</p>
+          </div>
+
+        </div>
+      </form>
+
+      <h1 id="qunit-header">QUnit results</h1>
+      <h2 id="qunit-banner"></h2>
+      <div id="qunit-testrunner-toolbar"></div>
+      <h2 id="qunit-userAgent"></h2>
+      <ol id="qunit-tests"></ol>
+      <div id="qunit-fixture">test markup, will be hidden</div>
+    </div>
+  </body>
+</html>

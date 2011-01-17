@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>JQuery-Taggit Example</title>
+    <link rel="stylesheet" href="example.css">
+    <script src="../third_party/jquery-1.4.4.min.js"></script>
+    <script src="../third_party/jquery.timers-1.2.js"></script>
+    <script src="../jquery.taggit.js"></script>
+    <script>
+      $(document).ready(function() {
+        taggit = $( "#tags" ).taggit( { tag_selector:
+                                        "#suggested-tags .taggit-tag" } );
+      });
+    </script>
+  </head>
+  <body>
+    <div id="content">
+      <header>
+        <h1>JQuery-Taggit example</h1>
+      </header>
+      <form>
+        <label for="tags">Tags:</label>
+        <input id="tags" name="tags" type="text" value="apple, dog"></input>
+        <div id="suggested-tags">
+          <div>
+            <span class="label">Span suggestions:</span>
+            <span class="taggit-tag">cat</span>
+            <span class="taggit-tag">dog</span>
+            <span class="taggit-tag">horse</span>
+            <span class="taggit-tag">parrot</span>
+          </div>
+
+          <div>
+            <span class="label">List suggestions:</span>
+            <ul>
+              <li class="taggit-tag">apple</li>
+              <li class="taggit-tag">ball</li>
+              <li class="taggit-tag">cat</li>
+              <li class="taggit-tag">dog</li>
+            </ul>
+          </div>
+
+          <div>
+            <span class="label">Paragraph suggestions:</span>
+            <p class="taggit-tag">apple</p>
+            <p class="taggit-tag">banana</p>
+            <p class="taggit-tag">lemon</p>
+            <p class="taggit-tag">pear</p>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
+

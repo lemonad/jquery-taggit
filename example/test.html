@@ -163,7 +163,7 @@
                      '"com,ma", "spa ces"' );
         });
 
-        test( "Test uniqify_array: unsorted uniqification of arrays",
+        test( "Test uniqify_array(): unsorted uniqification of arrays",
               function() {
           expect(4);
           deepEqual( $.fn.taggit.uniqify_array(["apple"]),
@@ -176,6 +176,27 @@
                      [] );
         });
 
+        test( "Test split_strip(): Split strings into array of trimmed, " +
+              "non-empty tags",
+              function() {
+          expect(8);
+          deepEqual( $.fn.taggit.split_strip("apple"),
+                     ["apple"] );
+          deepEqual( $.fn.taggit.split_strip("apple, ball, cat"),
+                     ["apple", "ball", "cat"] );
+          deepEqual( $.fn.taggit.split_strip("apple, ball cat"),
+                     ["apple", "ball cat"] );
+          deepEqual( $.fn.taggit.split_strip(""),
+                     [] );
+          deepEqual( $.fn.taggit.split_strip("apple", " "),
+                     ["apple"] );
+          deepEqual( $.fn.taggit.split_strip("apple ball cat", " "),
+                     ["apple", "ball", "cat"] );
+          deepEqual( $.fn.taggit.split_strip("apple, ball, cat", " "),
+                     ["apple,", "ball,", "cat"] );
+          deepEqual( $.fn.taggit.split_strip("", " "),
+                     [] );
+        });
       });
     </script>
   </head>

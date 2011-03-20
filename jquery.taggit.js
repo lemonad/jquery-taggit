@@ -199,7 +199,7 @@ $.fn.taggit.parse_tags = function( tagstring ) {
             if ( i >= tagstring.length ) {
                 throw "stopiteration";
             }
-            c = tagstring[i++];
+            c = tagstring.charAt(i++);
             if ( c == "\"" ) {
                 var trimmed_buffer = $.trim( buffer.join( "" ) );
                 if ( trimmed_buffer.length > 0 ) {
@@ -211,13 +211,13 @@ $.fn.taggit.parse_tags = function( tagstring ) {
                 if ( i >= tagstring.length ) {
                     throw "stopiteration";
                 }
-                c = tagstring[i++];
+                c = tagstring.charAt(i++);
                 while ( c != "\"" ) {
                     buffer.push( c );
                     if ( i >= tagstring.length ) {
                         throw "stopiteration";
                     }
-                    c = tagstring[i++];
+                    c = tagstring.charAt(i++);
                 }
                 trimmed_buffer = $.trim( buffer.join( "" ) );
                 if ( trimmed_buffer.length > 0 ) {

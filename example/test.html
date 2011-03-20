@@ -163,6 +163,19 @@
                      '"com,ma", "spa ces"' );
         });
 
+        test( "Test uniqify_array: unsorted uniqification of arrays",
+              function() {
+          expect(4);
+          deepEqual( $.fn.taggit.uniqify_array(["apple"]),
+                     ["apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["apple", "apple"]),
+                     ["apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["apple", "ball", "apple"]),
+                     ["apple", "ball"] );
+          deepEqual( $.fn.taggit.uniqify_array([]),
+                     [] );
+        });
+
       });
     </script>
   </head>

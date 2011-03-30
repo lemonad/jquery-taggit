@@ -40,6 +40,25 @@ If the tag input field has an initial value defined, calling ``taggit``
 will automatically mark all matching tag suggestions with the
 ``taggit-tag-used`` class name.
 
+#### Case handling
+``JQuery-taggit`` has three types of case handling. ``Django-taggit``
+is case-sensitive by default and thus this mode is also the default here.
+
+*   *Case-sensitive (default):*
+
+        $( "#tags" ).taggit( { ..., case_handling: "case-sensitive" } );
+
+        Apple, apple, dog, Dog  =>  Apple, apple, dog, Dog
+*   *Case-insensitive:*
+
+        $( "#tags" ).taggit( { ..., case_handling: "case-insensitive" } );
+
+        Apple, apple, dog, Dog  =>  Apple, dog
+*   *Lower-case:*
+
+        $( "#tags" ).taggit( { ..., case_handling: "lower-case" } );
+
+        Apple, apple, dog, Dog  =>  apple, dog
 
 Dependencies
 ------------

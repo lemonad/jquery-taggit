@@ -69,7 +69,15 @@ $.fn.taggit = function( options ) {
     */
     return this.each(function() {
         var input_field = $( this );
-        var tag_suggestions_selector = options.tag_selector;
+
+        // Merge options with the default settings
+        if ( options ) {
+            $.fn.taggit.settings = $.extend( {},
+                                             $.fn.taggit.settings,
+                                             options );
+        }
+
+        var tag_suggestions_selector = $.fn.taggit.settings.tag_selector;
 
         input_field.taggit_options = options;
 
@@ -110,17 +118,38 @@ $.fn.taggit = function( options ) {
     });
 };
 
+$.fn.taggit.settings = {
+    'case_handling' : 'case-sensitive'
+};
+
 /*
 Removes duplicate entries from an array.
 
 */
 $.fn.taggit.uniqify_array = function( a ) {
+    var case_handling = $.fn.taggit.settings.case_handling;
     var u = [];
+    var u_lower = [];
 
     for ( var i = 0; i < a.length; i++ ) {
         var val = a[i];
-        if ( $.inArray(val, u) === -1 ) {
-            u.push(val);
+        if ( case_handling === "case-sensitive" ) {
+            /* Case sensitive. "Apple, APPLE" -> "Apple, APPLE" */
+            if ( $.inArray( val, u ) === -1 ) {
+                u.push( val );
+            }
+        } else if ( case_handling === "case-insensitive" ) {
+            /* Case insensitive, pick first. "Apple, APPLE" -> "Apple" */
+            if ( $.inArray( val.toLowerCase(), u_lower ) === -1 ) {
+                u.push( val );
+                u_lower.push( val.toLowerCase() );
+            }
+        } else if ( case_handling === "lower-case" ) {
+            /* All lower case. "Apple, APPLE" -> "apple" */
+            val = val.toLowerCase();
+            if ( $.inArray( val, u ) === -1 ) {
+                u.push( val );
+            }
         }
     }
     return u;

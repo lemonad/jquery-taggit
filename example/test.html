@@ -197,6 +197,47 @@
           deepEqual( $.fn.taggit.split_strip("", " "),
                      [] );
         });
+
+        test( "Test case sensitive uniqify (default)",
+              function() {
+          expect(4);
+          deepEqual( $.fn.taggit.uniqify_array(["Apple"]),
+                     ["Apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["Apple", "applE"]),
+                     ["Apple", "applE"] );
+          deepEqual( $.fn.taggit.uniqify_array(["apple", "applE", "APPLE"]),
+                     ["apple", "applE", "APPLE"] );
+          deepEqual( $.fn.taggit.uniqify_array(["Apple", "Ball", "applE"]),
+                     ["Apple", "Ball", "applE"] );
+        });
+
+        test( "Test case insensitive uniqify",
+              function() {
+          $.fn.taggit.settings.case_handling = "case-insensitive";
+          expect(4);
+          deepEqual( $.fn.taggit.uniqify_array(["Apple"]),
+                     ["Apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["Apple", "applE"]),
+                     ["Apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["apple", "applE", "APPLE"]),
+                     ["apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["Apple", "Ball", "applE"]),
+                     ["Apple", "Ball"] );
+        });
+
+        test( "Test lowercase uniqify",
+              function() {
+          $.fn.taggit.settings.case_handling = "lower-case";
+          expect(4);
+          deepEqual( $.fn.taggit.uniqify_array(["Apple"]),
+                     ["apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["Apple", "applE"]),
+                     ["apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["apple", "applE", "APPLE"]),
+                     ["apple"] );
+          deepEqual( $.fn.taggit.uniqify_array(["Apple", "Ball", "applE"]),
+                     ["apple", "ball"] );
+        });
       });
     </script>
   </head>
